@@ -1,11 +1,37 @@
-const express = require("express");
+var express = require("express"),
+  fs = require("fs"),
+  url = require("url");
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.get("/", (req, res) => res.type('html').send(html));
+app.use("/public", express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/public"));
+
+app.get("/", (req, res) => res.type("html").send(html));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
+app.post("/uploadFile", (req, res) => {
+  var body = "";
+  filePath = __dirname + "/public/data.txt";
+  req.on("data", function (data) {
+    body += data;
+  });
+
+  req.on("end", function () {
+    fs.writeFile(filePath, body, { flag: "a+" }, function (err) {
+      if (err) {
+        console.error(err);
+      }
+      res.end();
+    });
+  });
+});
+
+app.get("/requestFile", (req, res) => {
+  const file = __dirname + "/public/data.txt";
+  res.download(file);
+});
 
 const html = `
 <!DOCTYPE html>
@@ -56,4 +82,4 @@ const html = `
     </section>
   </body>
 </html>
-`
+`;
