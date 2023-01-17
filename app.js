@@ -1,11 +1,16 @@
 var express = require("express"),
   fs = require("fs"),
-  url = require("url");
+  cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3001;
 
 app.use("/public", express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/public"));
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.get("/", (req, res) => res.type("html").send(html));
 
@@ -25,7 +30,7 @@ app.post("/uploadFile", (req, res) => {
       res.end();
     });
   });
-  res.status(200).send(body);
+  res.status(200).send("the file has been saved");
 });
 
 app.get("/requestFile", (req, res) => {
