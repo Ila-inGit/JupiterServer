@@ -9,27 +9,27 @@ app.use(express.static(__dirname + "/public"));
 
 app.get("/", (req, res) => res.type("html").send(html));
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () =>
+  console.log(`Jupiter server listening on port ${port}!`)
+);
 
 app.post("/uploadFile", (req, res) => {
   var body = "";
-  filePath = __dirname + "/public/data.txt";
+  filePath = __dirname + "/uploadedFiles/data.txt";
   req.on("data", function (data) {
     body += data;
   });
 
   req.on("end", function () {
-    fs.writeFile(filePath, body, { flag: "a+" }, function (err) {
-      if (err) {
-        console.error(err);
-      }
+    fs.writeFile(filePath, body, function () {
       res.end();
     });
   });
+  res.send(200, body);
 });
 
 app.get("/requestFile", (req, res) => {
-  const file = __dirname + "/public/data.txt";
+  const file = __dirname + "/uploadedFiles/data.txt";
   res.download(file);
 });
 
