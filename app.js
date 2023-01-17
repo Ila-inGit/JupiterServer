@@ -25,7 +25,7 @@ app.post("/uploadFile", (req, res) => {
       res.end();
     });
   });
-  res.send(200, body);
+  res.status(200).send(body);
 });
 
 app.get("/requestFile", (req, res) => {

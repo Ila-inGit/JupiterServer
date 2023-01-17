@@ -1,0 +1,6 @@
+{
+	"name" : "Andy Joseph",
+	"email": "andy@domain.com",
+	"country": "Australia",
+  	"company" :"MuleSoft"
+}
