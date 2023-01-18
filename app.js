@@ -19,8 +19,9 @@ app.listen(port, () =>
 );
 
 app.post("/uploadFile", (req, res) => {
+  const sessionToken = req.query.sessionToken;
   var body = "";
-  filePath = __dirname + "/uploadedFiles/data.txt";
+  filePath = __dirname + `/uploadedFiles/${sessionToken}.txt`;
   req.on("data", function (data) {
     body += data;
   });
@@ -34,8 +35,21 @@ app.post("/uploadFile", (req, res) => {
 });
 
 app.get("/requestFile", (req, res) => {
-  const file = __dirname + "/uploadedFiles/data.txt";
+  const sessionToken = req.query.sessionToken;
+  const file = __dirname + `/uploadedFiles/${sessionToken}.txt`;
   res.download(file);
+});
+
+app.get("/deleteFile", (req, res) => {
+  const sessionToken = req.query.sessionToken;
+  const filePath = __dirname + `/uploadedFiles/${sessionToken}.txt`;
+  req.on("end", function () {
+    fs.unlink(filePath, function (err) {
+      if (err) return console.log(err);
+      console.log("file deleted successfully");
+      res.end();
+    });
+  });
 });
 
 const html = `
