@@ -5,8 +5,7 @@ const { send } = require("process");
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use("/uploadedFiles", express.static(__dirname + "/uploadedFiles"));
-app.use(express.static(__dirname + "/uploadedFiles"));
+app.use(express.json());
 app.use(
   cors({
     origin: "*",
@@ -21,17 +20,23 @@ app.listen(port, () =>
 
 app.post("/uploadFile", (req, res) => {
   const sessionToken = req.query.sessionToken;
-  var body = "";
   var filePath = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
-  req.on("data", function (data) {
-    body += data;
+  // req.on("data", function (data) {
+  //   body += data;
+  // });
+  // req.on("end", function () {
+  //   fs.writeFile(filePath, body, function () {
+  //     res.end();
+  //   });
+  // });
+  var body = JSON.stringify(req.body);
+  fs.writeFile(filePath, body, function (err) {
+    if (err) {
+      res.status(404).send();
+    } else {
+      res.status(200).send("file written on server");
+    }
   });
-  req.on("end", function () {
-    fs.writeFile(filePath, body, function () {
-      res.end();
-    });
-  });
-  res.status(200).send(filePath);
 });
 
 app.get("/requestFile", (req, res) => {
@@ -43,9 +48,9 @@ app.get("/requestFile", (req, res) => {
 
   fs.readFile(filePath, function (err, data) {
     if (err) {
-      res.status(404).send(err);
+      res.status(404).send();
     } else {
-      res.send(data);
+      res.status(200).send(data);
     }
   });
 });
@@ -53,13 +58,14 @@ app.get("/requestFile", (req, res) => {
 app.get("/deleteFile", (req, res) => {
   const sessionToken = req.query.sessionToken;
   const filePath = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
-  var error = "";
+
   fs.unlink(filePath, function (err) {
-    if (err) error = err;
-    else console.log("file deleted successfully");
+    if (err) {
+      res.status(404).send();
+    } else {
+      res.status(200).send("the file has been deleted");
+    }
   });
-  if (error) res.status(404).send(error);
-  else res.status(200).send("the file has been deleted");
 });
 
 const html = `
