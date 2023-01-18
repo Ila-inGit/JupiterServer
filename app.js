@@ -22,29 +22,28 @@ app.listen(port, () =>
 app.post("/uploadFile", (req, res) => {
   const sessionToken = req.query.sessionToken;
   var body = "";
-  filePath = __dirname + `/uploadedFiles/${sessionToken}.txt`;
+  filePath = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
   req.on("data", function (data) {
     body += data;
   });
-
   req.on("end", function () {
     fs.writeFile(filePath, body, function () {
       res.end();
     });
   });
-  res.status(200).send("the file has been saved");
+  res.status(200).send(body);
 });
 
 app.get("/requestFile", (req, res) => {
   const sessionToken = req.query.sessionToken;
-  const file = __dirname + `/uploadedFiles/${sessionToken}.txt`;
+  const file = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
   res.download(file);
 });
 
 app.get("/deleteFile", (req, res) => {
   const sessionToken = req.query.sessionToken;
-  const filePath = __dirname + `/uploadedFiles/${sessionToken}.txt`;
-  var error;
+  const filePath = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
+  var error = "";
   fs.unlink(filePath, function (err) {
     if (err) error = err;
     else console.log("file deleted successfully");
