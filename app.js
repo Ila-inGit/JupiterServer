@@ -37,7 +37,9 @@ app.post("/uploadFile", (req, res) => {
 app.get("/requestFile", (req, res) => {
   const sessionToken = req.query.sessionToken;
   var filePath = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
-  res.download(filePath);
+  res.download(filePath, function () {
+    res.status(404).send(filePath);
+  });
 });
 
 app.get("/deleteFile", (req, res) => {
