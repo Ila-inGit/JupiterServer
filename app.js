@@ -5,8 +5,8 @@ const { send } = require("process");
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use("/public", express.static(__dirname + "/public"));
-app.use(express.static(__dirname + "/public"));
+app.use("/uploadedFiles", express.static(__dirname + "/uploadedFiles"));
+app.use(express.static(__dirname + "/uploadedFiles"));
 app.use(
   cors({
     origin: "*",
@@ -22,7 +22,7 @@ app.listen(port, () =>
 app.post("/uploadFile", (req, res) => {
   const sessionToken = req.query.sessionToken;
   var body = "";
-  filePath = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
+  var filePath = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
   req.on("data", function (data) {
     body += data;
   });
@@ -31,13 +31,13 @@ app.post("/uploadFile", (req, res) => {
       res.end();
     });
   });
-  res.status(200).send(body);
+  res.status(200).send(filePath);
 });
 
 app.get("/requestFile", (req, res) => {
   const sessionToken = req.query.sessionToken;
-  const file = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
-  res.download(file);
+  var filePath = __dirname + "/uploadedFiles/" + sessionToken + ".txt";
+  res.download(filePath);
 });
 
 app.get("/deleteFile", (req, res) => {
